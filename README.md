@@ -3,10 +3,16 @@
 
 SQL Query Builder Utility
 
-## Features
+## Supported Queries
 -   [x] Select
-   -  [x] Average
-   -  [x] Count     
 -   [x] Insert
 -   [x] Update
 -   [x] Delete
+-   [x] Paging
+
+## Aggregates
+-   [x] Count 
+-   [x] Min
+-   [x] Max
+-   [x] Sum
+-   [x] Avg
