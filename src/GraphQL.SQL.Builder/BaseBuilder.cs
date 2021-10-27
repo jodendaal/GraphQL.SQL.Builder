@@ -4,18 +4,25 @@ using System.Data;
 using System.Data.SqlClient;
 namespace GraphQL.SQL.Builder
 {
-    public class SelectQueryCommand : SelectQueryBuilder
+    public class BaseBuilder 
     {
         Dictionary<string, System.Data.SqlClient.SqlParameter> _parameters = new Dictionary<string, System.Data.SqlClient.SqlParameter>();
         public Dictionary<string, System.Data.SqlClient.SqlParameter> Parameters { get { return _parameters; } }
+        int paramCount = 0;
+        private readonly string parameterSuffix;
+        public BaseBuilder()
+        {
+
+        }
+        public BaseBuilder(string parameterSuffix)
+        {
+            this.parameterSuffix = parameterSuffix;
+        }
 
         public bool AddParams { get; private set; }
 
-        int paramCount = 0;
+       
 
-        public SelectQueryCommand(string tableName, string tableAlias = "") : base(tableName, tableAlias)
-        {
-        }
 
         /// <summary>
         /// Adds a command parameters and returns the new paramter name
@@ -24,9 +31,14 @@ namespace GraphQL.SQL.Builder
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string AddParam(object value, string name = "",SqlDbType type = SqlDbType.NVarChar)
+        public string AddParam(object value, SqlDbType type, string name = "")
         {
             var paramName = name == string.Empty ? $"@p_{paramCount}" : $"@{name}";
+            if (!string.IsNullOrWhiteSpace(this.parameterSuffix))
+            {
+                paramName = $"{paramName}_{parameterSuffix}";
+            }
+
             SqlParameter paramter;
             if (_parameters.ContainsKey(paramName))
             {
@@ -38,12 +50,12 @@ namespace GraphQL.SQL.Builder
             _parameters.Add(paramName, paramter);
             paramCount = paramCount + 1;
 
-            return paramName;
+            return  paramName;
         }
 
         public string AddParam(object value, string name = "", string type = "nvarchar")
         {
-            return AddParam(value, name, type.ToSqlDbType());
+            return AddParam(value,  type.ToSqlDbType(), name);
         }
 
         public SqlCommand ToCommand()

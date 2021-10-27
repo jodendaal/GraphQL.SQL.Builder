@@ -156,6 +156,52 @@ Usefull for scenarious where dynamic SQL is required. Supports complex set logic
     FROM Users U
     WHERE U.UserId = 1
 ```
+## Insert
+```csharp
+    var insert = new InsertQueryBuilder("Users");
+        insert.Field("UserId", insert.AddParam("1")).
+               Field("Password", insert.AddParam("test123"));
+```
+##### Output
+```sql
+    INSERT INTO Users
+    (
+        UserId,
+        Password
+    )
+    VALUES
+    (
+        @p_0,
+        @p_1
+    )
+```
+
+## Insert From Select
+```csharp
+    var insert = new InsertQueryBuilder("Users");
+        insert.Field("UserId").
+                Field("Password").
+                From("Users_Backup", "UB", (query) =>
+                {
+                    query.Field("UB.UserId").
+                            Field("UB.Password").
+                            Condition("UB.UserId", ColumnOperator.Equals, insert.AddParam(1, "UserId"));
+                });
+```
+##### Output
+```sql
+    INSERT INTO Users
+    (
+        UserId,
+        Password
+    )
+    SELECT
+        UB.UserId,
+        UB.Password
+    FROM Users_Backup UB
+    WHERE UB.UserId = @UserId
+```
+
 ## Join
 ```csharp
     var query = new SelectQueryBuilder("Users", "U");

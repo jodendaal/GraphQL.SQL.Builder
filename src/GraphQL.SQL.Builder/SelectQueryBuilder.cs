@@ -7,7 +7,7 @@ using System.Text;
 namespace GraphQL.SQL.Builder
 {
 
-    public class SelectQueryBuilder
+    public class SelectQueryBuilder : BaseBuilder
     {
         private readonly string _tableName;
         private readonly string _tableAlias;
@@ -23,6 +23,12 @@ namespace GraphQL.SQL.Builder
         private string _groupBy;
 
         public string TableAlias => _tableAlias;
+
+        public SelectQueryBuilder(string tableName, string tableAlias,string parameterPrefix = ""):base(parameterPrefix)
+        {
+            this._tableName = tableName;
+            this._tableAlias = tableAlias;
+        }
 
         public SelectQueryBuilder(string tableName,string tableAlias = "")
         {

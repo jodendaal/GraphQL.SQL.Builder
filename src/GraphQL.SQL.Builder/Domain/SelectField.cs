@@ -1,14 +1,12 @@
 ﻿namespace GraphQL.SQL.Builder
 {
-    public class SelectField
+    public class SelectField : Field
     {
-        public SelectField(string name, string @as)
+        public SelectField(string name, string @as):base(name)
         {
-            Name = name;
             As = @as;
         }
 
-        public string Name { get; set; }
         public string As { get; set; }
 
         public override string ToString()
