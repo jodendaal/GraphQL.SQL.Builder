@@ -3,4 +3,10 @@
 
 SQL Query Builder Utility
 
-
+## Features
+-   [x] Select
+   -  [x] Average
+   -  [x] Count     
+-   [x] Insert
+-   [x] Update
+-   [x] Delete
