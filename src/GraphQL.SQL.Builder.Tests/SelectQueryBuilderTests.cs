@@ -36,6 +36,30 @@ namespace GraphQL.SQL.Tests
         }
 
         [TestMethod]
+        public void Select_Simple_Paging()
+        {
+            SelectQueryCommand query = new SelectQueryCommand("Users");
+            query.Field("UserId").
+                  Field("UserName").
+                  Condition("UserId", ColumnOperator.Equals, query.AddParam(1, "UserId")).
+                  Page(query.AddParam(1, "_PageNumber"), query.AddParam(10, "_PageSize"), "UserId");
+
+            var sql = query.ToString();
+
+            var expected =
+@"select
+userid,
+username
+from users
+where userid = @userid
+order by userid
+offset @_pagesize * (@_pagenumber - 1)
+rows fetch next @_pagesize rows only";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
         public void Select_Simple_Two_Sets()
         {
             //(Find users who are admins and username is either tim or connor and password='password'
