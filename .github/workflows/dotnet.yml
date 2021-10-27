@@ -20,11 +20,9 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore src/GraphQL.SQL.Builder.sln
     - name: Build
-      run: dotnet build src/GraphQL.SQL.Builder.sln --no-restore
+      run: dotnet build src/GraphQL.SQL.Builder.sln --no-restore --configuration Release
     - name: Test
-      run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal
+      run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal --configuration Release
     - name: Publish NuGet
-      uses: Squazz/publish-nuget@v2.5.6 
-      with: 
-           PACKAGE_NAME: src/GraphQL.SQL.Builder/bin/release/GraphQL.SQL.Builder.1.0.0.nupkg
+      run: dotnet nuget push src/GraphQL.SQL.Builder/bin/Release/GraphQL.SQL.Builder.1.0.0.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --source https://api.nuget.org/v3/index.json
         

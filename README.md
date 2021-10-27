@@ -17,10 +17,7 @@ SQL Query Builder Utility
 -   [x] Sum
 -   [x] Avg
 
-## Example Usage
-
-### Select
-
+## Select
     var query = new SelectQueryBuilder("Users", "U");
     query.Field("UserId", "Id").
           Field("UserName").
@@ -35,7 +32,7 @@ SQL Query Builder Utility
     FROM Users U
     WHERE U.UserId = 1
 
-### Join
+## Join
 
     var query = new SelectQueryBuilder("Users", "U");
     query.Field("U.UserId", "Id").
@@ -55,7 +52,7 @@ SQL Query Builder Utility
     INNER JOIN Preferences P ON P.UserId = U.UserId
     WHERE U.UserId = 1
 
-### Count
+## Count
 
     var query = new SelectQueryBuilder("Users", "U");
     query.Count("*", "[RecordCount]").
