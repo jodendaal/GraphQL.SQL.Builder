@@ -1,5 +1,7 @@
 ﻿using GraphQL.SQL.Builder;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GraphQL.SQL
 {
@@ -62,7 +64,7 @@ namespace GraphQL.SQL
             return this;
         }
 
-        public SelectConditionSet GetAndSet(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet GetAndSet(string fieldName, string @operator, string value)
         {
             if (AndSet == null)
             {
@@ -72,7 +74,7 @@ namespace GraphQL.SQL
             return AndSet;
         }
 
-        public SelectConditionSet GetOrSet(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet GetOrSet(string fieldName, string @operator, string value)
         {
             if (OrSet == null)
             {
@@ -80,6 +82,45 @@ namespace GraphQL.SQL
             }
 
             return OrSet;
+        }
+
+        public virtual string GetSetSql(SelectConditionSet set, int level)
+        {
+            var andFilter = "";
+            for (int i = 0; i < set.And.Count(); i++)
+            {
+                var item = set.And[i];
+                andFilter += i == 0 ? $"{item}" : $" AND {item}";
+
+            }
+            var filterResult = andFilter;
+
+            level++;
+            var orFilter = "";
+            for (int i = 0; i < set.Or.Count(); i++)
+            {
+                var item = set.Or[i];
+                orFilter += i == 0 ? $"{item}" : $" OR {item}";
+            }
+            if (!string.IsNullOrWhiteSpace(orFilter))
+            {
+                filterResult = string.IsNullOrWhiteSpace(filterResult) ? orFilter : $"(({andFilter}) {set.SetOperator} ({orFilter}))";
+            }
+
+            if (set.AndSet != null)
+            {
+                var andSetString = GetSetSql(set.AndSet, level + 1);
+                filterResult = $"({filterResult}) AND{Environment.NewLine}({andSetString})";
+            }
+
+            if (set.OrSet != null)
+            {
+                var orSetString = GetSetSql(set.OrSet, level + 2);
+                filterResult = $"({filterResult}) OR{Environment.NewLine}({orSetString})";
+            }
+
+
+            return $"{filterResult}";
         }
     }
 }

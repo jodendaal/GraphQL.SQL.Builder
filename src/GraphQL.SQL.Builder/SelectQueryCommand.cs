@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using GraphQL.SQL.Builder.Domain;
+using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
 namespace GraphQL.SQL.Builder
 {
@@ -22,7 +24,7 @@ namespace GraphQL.SQL.Builder
         /// <param name="value"></param>
         /// <param name="name"></param>
         /// <returns></returns>
-        public string AddParam(object value, string name = "",string type = null)
+        public string AddParam(object value, string name = "",SqlDbType type = SqlDbType.NVarChar)
         {
             var paramName = name == string.Empty ? $"@p_{paramCount}" : $"@{name}";
             SqlParameter paramter;
@@ -32,11 +34,16 @@ namespace GraphQL.SQL.Builder
             }
 
             paramter = new SqlParameter(paramName, value);
-            //paramter.SqlDbType = QQQQ
+            paramter.SqlDbType = type;
             _parameters.Add(paramName, paramter);
             paramCount = paramCount + 1;
 
             return paramName;
+        }
+
+        public string AddParam(object value, string name = "", string type = "nvarchar")
+        {
+            return AddParam(value, name, type.ToSqlDbType());
         }
 
         public SqlCommand ToCommand()
