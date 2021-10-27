@@ -18,11 +18,11 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
-      run: dotnet restore src/GraphQL.SQL.Builder.sln
+      run: dotnet restore src/GraphQL.SQL.Builder.sln --configuration Release
     - name: Build
       run: dotnet build src/GraphQL.SQL.Builder.sln --no-restore --configuration Release
     - name: Test
-      run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal
+      run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal --configuration Release
     - name: Publish NuGet
       uses: Squazz/publish-nuget@v2.5.6 
       with: 
