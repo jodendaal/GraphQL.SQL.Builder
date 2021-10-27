@@ -36,6 +36,70 @@ namespace GraphQL.SQL.Tests
         }
 
         [TestMethod]
+        public void Select_Simple_Two_Sets()
+        {
+            //(Find users who are admins and username is either tim or connor and password='password'
+            SelectQueryCommand query = new SelectQueryCommand("Users");
+            query.Field("UserId").
+                  Field("UserName").
+                  Field("IsAdmin").
+                  Field("Password").
+                  ConditionSet(1, SetOperator.And, (set) =>
+                  {
+                      set.AndCondition("IsAdmin", ColumnOperator.Equals, query.AddParam(true, "IsAdmin")).
+                      OrCondition("UserName", ColumnOperator.Equals, query.AddParam("tim")).
+                      OrCondition("UserName", ColumnOperator.Equals, query.AddParam("connor"));
+                  }).
+                  ConditionSet(2, SetOperator.And, (set) =>
+                  {
+                      set.OrCondition("Password", ColumnOperator.Equals, query.AddParam("password"));
+                  });
+
+            var sql = query.ToString();
+
+            var expected =
+@"SELECT
+UserId,
+UserName,
+IsAdmin,
+Password
+FROM Users
+WHERE (((IsAdmin = @IsAdmin) AND (UserName = @p_1 OR UserName = @p_2))) AND
+(Password = @p_3)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
+        public void Select_Simple_One_Set()
+        {
+            //Find users who are admins and username is either tim or connor
+            SelectQueryCommand query = new SelectQueryCommand("Users");
+            query.Field("UserId").
+                  Field("UserName").
+                  Field("IsAdmin").
+                  Condition("IsAdmin", ColumnOperator.Equals, query.AddParam(true,"IsAdmin")).
+                  ConditionSet(1, SetOperator.And, (set) =>
+                  {
+                      set.OrCondition("UserName", ColumnOperator.Equals, query.AddParam("tim")).
+                       OrCondition("UserName", ColumnOperator.Equals, query.AddParam("connor"));
+                  });
+
+            var sql = query.ToString();
+
+            var expected =
+@"SELECT
+UserId,
+UserName,
+IsAdmin
+FROM Users
+WHERE (IsAdmin = @IsAdmin) AND
+(UserName = @p_1 OR UserName = @p_2)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
         public void Select_Simple_Count()
         {
             var query = new SelectQueryBuilder("Users", "U");
