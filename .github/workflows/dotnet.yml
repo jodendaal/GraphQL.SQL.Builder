@@ -26,5 +26,5 @@ jobs:
     - name: Publish NuGet
       uses: Squazz/publish-nuget@v2.5.6 
       with: 
-           PACKAGE_NAME: src/GraphQL.SQL.Builder/bin/release/GraphQL.SQL.Builder.1.0.0.nupkg
+           PACKAGE_NAME: /src/GraphQL.SQL.Builder/bin/Release/GraphQL.SQL.Builder.1.0.0.nupkg
         
