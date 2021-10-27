@@ -7,6 +7,67 @@ namespace GraphQL.SQL.Tests
     [TestClass]
     public class SqlCommandBuilderTests
     {
+        [TestMethod]
+        public void Select_Simple_Count()
+        {
+            var query = new SelectQueryBuilder("Users", "U");
+            query.Count("*", "[RecordCount]").
+            Condition("U.UserId", ColumnOperator.Equals, "1");
+
+
+            var expected =
+@"SELECT
+COUNT(*) AS [RecordCount]
+FROM Users U
+WHERE U.UserId = 1";
+            var sql = query.ToString();
+            Assert.AreEqual(sql, expected);
+        }
+
+        [TestMethod]
+        public void Select_Simple()
+        {
+            var query = new SelectQueryBuilder("Users", "U");
+            query.Field("UserId", "Id").
+                  Field("UserName").
+                  Field("Password").
+                  Condition("U.UserId", ColumnOperator.Equals, "1");
+
+            var expected =
+@"SELECT
+UserId AS Id,
+UserName,
+Password
+FROM Users U
+WHERE U.UserId = 1";
+            var sql = query.ToString();
+            Assert.AreEqual(sql, expected);
+        }
+
+        [TestMethod]
+        public void Select_Simple_Join()
+        {
+            var query = new SelectQueryBuilder("Users", "U");
+            query.Field("U.UserId", "Id").
+                  Field("U.UserName").
+                  Field("U.Password").
+                  Join("Preferences P",JoinType.Inner,"P.UserId = U.UserId").
+                  Field("P.Theme").
+                  Condition("U.UserId", ColumnOperator.Equals, "1");
+
+            var expected =
+@"SELECT
+U.UserId AS Id,
+U.UserName,
+U.Password,
+P.Theme
+FROM Users U
+INNER JOIN Preferences P ON P.UserId = U.UserId
+WHERE U.UserId = 1";
+            var sql = query.ToString();
+            Assert.AreEqual(sql, expected);
+        }
+
 
         [TestMethod]
         public void Select_Join_With_Condition()
