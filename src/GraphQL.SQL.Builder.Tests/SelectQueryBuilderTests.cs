@@ -1,12 +1,40 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using GraphQL.SQL.Builder;
+using System.Data.SqlClient;
+using System.Data;
 
 namespace GraphQL.SQL.Tests
 {
     [TestClass]
     public class SqlCommandBuilderTests
     {
+        //Example Usage
+        public DataTable GetUser(int userId)
+        {
+            var query = new SelectQueryCommand("Users", "U");
+            query.Field("UserId", "Id").
+               Field("UserName").
+               Field("Password").
+               Condition("U.UserId", ColumnOperator.Equals, query.AddParam(userId,"UserId"));
+
+            var table = new DataTable();
+            var sqlCommand = query.ToCommand();
+
+            using (var connection = new SqlConnection("connection_string"))
+            {
+                connection.Open();
+                sqlCommand.Connection = connection;
+
+                using (var dataAdapter = new SqlDataAdapter(sqlCommand))
+                {
+                    dataAdapter.Fill(table);
+                }
+            }
+
+            return table;
+        }
+
         [TestMethod]
         public void Select_Simple_Count()
         {

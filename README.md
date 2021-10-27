@@ -17,6 +17,43 @@ SQL Query Builder Utility
 -   [x] Sum
 -   [x] Avg
 
+## Simple Usage
+
+    public DataTable GetUser(int userId)
+    {
+        var query = new SelectQueryCommand("Users", "U");
+        query.Field("UserId", "Id").
+            Field("UserName").
+            Field("Password").
+            Condition("U.UserId", ColumnOperator.Equals, query.AddParam(userId,"UserId"));
+        var sqlCommand = query.ToCommand();
+
+        var table = new DataTable();
+        using (var connection = new SqlConnection("connection_string"))
+        {
+            connection.Open();
+            sqlCommand.Connection = connection;
+
+            using (var dataAdapter = new SqlDataAdapter(sqlCommand))
+            {
+                dataAdapter.Fill(table);
+            }
+        }
+
+        return table;
+    }
+    
+##### Output
+    SELECT
+          UserId AS Id,
+          UserName,
+          Password
+    FROM Users U
+    WHERE U.UserId = @UserId
+    
+    --Parameters
+    @UserId=1
+
 ## Select
     var query = new SelectQueryBuilder("Users", "U");
     query.Field("UserId", "Id").
