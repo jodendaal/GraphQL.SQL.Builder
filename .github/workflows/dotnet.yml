@@ -24,7 +24,5 @@ jobs:
     - name: Test
       run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal --configuration Release
     - name: Publish NuGet
-      uses: Squazz/publish-nuget@v2.5.6 
-      with: 
-           PACKAGE_NAME: /src/GraphQL.SQL.Builder/bin/Release/GraphQL.SQL.Builder.1.0.0.nupkg
+      run: dotnet nuget push /src/GraphQL.SQL.Builder/bin/Release/GraphQL.SQL.Builder.1.0.0.nupkg --source https://api.nuget.org/v3/index.json
         
