@@ -24,5 +24,5 @@ jobs:
     - name: Test
       run: dotnet test src/GraphQL.SQL.Builder.sln --no-build --verbosity normal --configuration Release
     - name: Publish NuGet
-      run: dotnet nuget push src/GraphQL.SQL.Builder/bin/Release/GraphQL.SQL.Builder.1.0.0.nupkg --api-key ${{ secrets.NUGET_APIKEY }} --source https://api.nuget.org/v3/index.json
+      run: dotnet nuget push src/GraphQL.SQL.Builder/bin/Release/*.nupkg --skip-duplicate --api-key ${{ secrets.NUGET_APIKEY }} --source https://api.nuget.org/v3/index.json
         
