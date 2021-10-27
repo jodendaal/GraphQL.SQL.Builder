@@ -6,6 +6,7 @@
     <RepositoryUrl>https://github.com/jodendaal/GraphQL.SQL.Builder</RepositoryUrl>
     <Description>SQL Query Builder Utility</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
