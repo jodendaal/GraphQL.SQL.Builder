@@ -79,7 +79,7 @@ Usefull for scenarious where dynamic SQL is required. Supports complex set logic
     --Parameters
     @_PageNumber=1,@_PageSize=10,@UserId=1
 ```
-## Sets Usage
+## Condition Sets Usage
 ```csharp
     //Find users who are admins and username is either tim or connor
       SelectQueryCommand query = new SelectQueryCommand("Users");
@@ -105,7 +105,7 @@ Usefull for scenarious where dynamic SQL is required. Supports complex set logic
     --Parameters
     @IsAdmin=1,@p_1='tim',@p_2='connor'
 ```
-## Multiple Sets
+## Multiple Condition Sets
 
 ```csharp  
     //(Find users who are admins and username is either tim or connor) and password='password'
