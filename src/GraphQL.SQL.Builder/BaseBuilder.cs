@@ -50,18 +50,19 @@ namespace GraphQL.SQL.Builder
             if (_parameters.ContainsKey(paramName))
             {
                 paramName = $"{paramName}_{_paramCount}";
-            };
+            }
+
             return paramName;
         }
 
         public string AddParam(object value, string name = "", string type = "")
         {
-
             var parameter = new SqlParameter(GetParameterName(name), value);
             if (!string.IsNullOrWhiteSpace(type))
             {
                 parameter.SqlDbType = type.ToSqlDbType();
-            };
+            }
+
             AddParameter(parameter);
             return parameter.ParameterName;
         }
