@@ -40,6 +40,48 @@ namespace GraphQL.SQL.Builder
             return this as T;
         }
 
+        public T Exists(Action<SelectQueryBuilder> builder)
+        {
+            var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);
+            builder(queryBuilder);
+            Condition(new SelectCondition(string.Empty, ColumnOperator.EXISTS, $"({queryBuilder})"));
+            return this as T;
+        }
+
+        public T NotExists(Action<SelectQueryBuilder> builder)
+        {
+            var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);
+            builder(queryBuilder);
+            Condition(new SelectCondition(string.Empty, ColumnOperator.NOT_EXISTS, $"({queryBuilder})"));
+            return this as T;
+        }
+
+        public T In(string fieldName, Action<SelectQueryBuilder> builder)
+        {
+            var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);
+            builder(queryBuilder);
+            return In(fieldName, queryBuilder.ToString());
+        }
+
+        public T In(string fieldName, string value)
+        {
+            Condition(new SelectCondition(fieldName, ColumnOperator.IN, $"({value})"));
+            return this as T;
+        }
+
+        public T NotIn(string fieldName, Action<SelectQueryBuilder> builder)
+        {
+            var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);
+            builder(queryBuilder);
+            return NotIn(fieldName, queryBuilder.ToString());
+        }
+
+        public T NotIn(string fieldName, string value)
+        {
+            Condition(new SelectCondition(fieldName, ColumnOperator.NOT_IN, $"({value})"));
+            return this as T;
+        }
+
         public T Condition(string fieldName, string @operator, Action<SelectQueryBuilder> builder)
         {
             var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);

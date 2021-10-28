@@ -13,5 +13,6 @@ namespace GraphQL.SQL.Builder
         public const string IN = "IN";
         public const string NOT_IN = "NOT IN";
         public const string EXISTS = "EXISTS";
+        public const string NOT_EXISTS = "NOT EXISTS";
     }
 }
