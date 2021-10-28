@@ -75,6 +75,16 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
+        public SelectQueryBuilder OrderByAsc(string fields)
+        {
+            return OrderBy(fields, "ASC");
+        }
+
+        public SelectQueryBuilder OrderByDesc(string fields)
+        {
+            return OrderBy(fields, "DESC");
+        }
+
         public SelectQueryBuilder OrderBy(string fields, string direction = "ASC")
         {
             _orderBy = $"ORDER BY {fields} {direction}";

@@ -449,6 +449,38 @@ ORDER BY [dbo].[users].[userId] ASC
         }
 
         [TestMethod]
+        public void Select_OrderByMethodAsc()
+        {
+            var query = new SelectQueryBuilder("[dbo].[users]");
+            query.Field("[dbo].[users].[userId]").
+                  OrderByAsc("[dbo].[users].[userId]");
+            var sql = query.ToString();
+            var expected =
+@"SELECT
+[dbo].[users].[userId]
+FROM [dbo].[users]
+ORDER BY [dbo].[users].[userId] ASC
+";
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
+        public void Select_OrderByMethodDessc()
+        {
+            var query = new SelectQueryBuilder("[dbo].[users]");
+            query.Field("[dbo].[users].[userId]").
+                  OrderByDesc("[dbo].[users].[userId]");
+            var sql = query.ToString();
+            var expected =
+@"SELECT
+[dbo].[users].[userId]
+FROM [dbo].[users]
+ORDER BY [dbo].[users].[userId] ASC
+";
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
         public void Select_OrderBy_With_Paging()
         {
             var query = new SelectQueryBuilder("[dbo].[users]");

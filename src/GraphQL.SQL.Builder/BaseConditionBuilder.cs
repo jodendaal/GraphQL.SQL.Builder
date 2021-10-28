@@ -96,6 +96,16 @@ namespace GraphQL.SQL.Builder
             return this as T;
         }
 
+        public T InnerJoin(string tableName, string joinFields)
+        {
+            return Join(new SelectJoin(tableName, JoinType.Inner, joinFields));
+        }
+
+        public T LeftJoin(string tableName, string joinFields)
+        {
+            return Join(new SelectJoin(tableName, JoinType.Left, joinFields));
+        }
+
         public T Join(string tableName, JoinType joinType, string joinFields)
         {
             return Join(new SelectJoin(tableName, joinType, joinFields));
