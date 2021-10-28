@@ -22,7 +22,7 @@ namespace GraphQL.SQL.Builder
         {
         }
 
-        public T ConditionSet(int id, SetOperator setOperator, Action<SelectConditionSet> func)
+        public T ConditionSet(int id, string setOperator, Action<SelectConditionSet> func)
         {
             if (!_conditionSets.ContainsKey(id))
             {
@@ -125,10 +125,10 @@ namespace GraphQL.SQL.Builder
 
         internal string GetSetsSql(Dictionary<int, SelectConditionSet> filterSets)
         {
-            var setClauses = new List<KeyValuePair<SetOperator, string>>();
+            var setClauses = new List<KeyValuePair<string, string>>();
             foreach (var set in filterSets)
             {
-                setClauses.Add(new KeyValuePair<SetOperator, string>(set.Value.SetOperator, set.Value.GetSetSql(set.Value, set.Key)));
+                setClauses.Add(new KeyValuePair<string, string>(set.Value.SetOperator, set.Value.GetSetSql(set.Value, set.Key)));
             }
 
             var result = string.Empty;

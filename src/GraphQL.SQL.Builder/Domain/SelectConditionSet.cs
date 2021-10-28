@@ -7,7 +7,7 @@ namespace GraphQL.SQL
 {
     public class SelectConditionSet
     {
-        public SelectConditionSet(SetOperator setOperator)
+        public SelectConditionSet(string setOperator)
         {
             SetOperator = setOperator;
         }
@@ -16,7 +16,7 @@ namespace GraphQL.SQL
 
         public List<SelectCondition> Or { get; set; } = new List<SelectCondition>();
 
-        public SetOperator SetOperator { get; set; } = SetOperator.Or;
+        public string SetOperator { get; set; } = GraphQL.SQL.Builder.SetOperator.Or;
 
         public SelectConditionSet AndSet { get; set; }
 
@@ -38,7 +38,7 @@ namespace GraphQL.SQL
         {
             if (OrSet == null)
             {
-                OrSet = new SelectConditionSet(SetOperator.Or);
+                OrSet = new SelectConditionSet(GraphQL.SQL.Builder.SetOperator.Or);
             }
 
             OrSet.Or.Add(new SelectCondition(fieldName, @operator, value));
@@ -49,7 +49,7 @@ namespace GraphQL.SQL
         {
             if (OrSet == null)
             {
-                OrSet = new SelectConditionSet(SetOperator.Or);
+                OrSet = new SelectConditionSet(GraphQL.SQL.Builder.SetOperator.Or);
             }
 
             OrSet.And.Add(new SelectCondition(fieldName, @operator, value));
@@ -60,7 +60,7 @@ namespace GraphQL.SQL
         {
             if (AndSet == null)
             {
-                AndSet = new SelectConditionSet(SetOperator.And);
+                AndSet = new SelectConditionSet(GraphQL.SQL.Builder.SetOperator.And);
             }
 
             AndSet.And.Add(new SelectCondition(fieldName, @operator, value));
@@ -71,7 +71,7 @@ namespace GraphQL.SQL
         {
             if (AndSet == null)
             {
-                AndSet = new SelectConditionSet(SetOperator.Or);
+                AndSet = new SelectConditionSet(GraphQL.SQL.Builder.SetOperator.Or);
             }
 
             return AndSet;
@@ -81,7 +81,7 @@ namespace GraphQL.SQL
         {
             if (OrSet == null)
             {
-                OrSet = new SelectConditionSet(SetOperator.Or);
+                OrSet = new SelectConditionSet(GraphQL.SQL.Builder.SetOperator.Or);
             }
 
             return OrSet;

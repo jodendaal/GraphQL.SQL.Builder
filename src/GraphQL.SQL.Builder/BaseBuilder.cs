@@ -30,27 +30,40 @@ namespace GraphQL.SQL.Builder
         /// <returns>Parameter name.</returns>
         public string AddParam(object value, SqlDbType type, string name = "")
         {
-            var paramName = name == string.Empty ? $"@p_{_paramCount}" : $"@{name}";
-
-            SqlParameter paramter;
-            if (_parameters.ContainsKey(paramName))
-            {
-                paramName = $"{paramName}_{_paramCount}";
-            }
-
-            paramter = new SqlParameter(paramName, value)
+            var paramter = new SqlParameter(GetParameterName(name), value)
             {
                 SqlDbType = type
             };
-            _parameters.Add(paramName, paramter);
-            _paramCount++;
+            AddParameter(paramter);
+            return paramter.ParameterName;
+        }
 
+        private void AddParameter(SqlParameter parameter)
+        {
+            _parameters.Add(parameter.ParameterName, parameter);
+            _paramCount++;
+        }
+
+        private string GetParameterName(string name)
+        {
+            var paramName = name == string.Empty ? $"@p_{_paramCount}" : $"@{name}";
+            if (_parameters.ContainsKey(paramName))
+            {
+                paramName = $"{paramName}_{_paramCount}";
+            };
             return paramName;
         }
 
-        public string AddParam(object value, string name = "", string type = "nvarchar")
+        public string AddParam(object value, string name = "", string type = "")
         {
-            return AddParam(value, type.ToSqlDbType(), name);
+
+            var parameter = new SqlParameter(GetParameterName(name), value);
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                parameter.SqlDbType = type.ToSqlDbType();
+            };
+            AddParameter(parameter);
+            return parameter.ParameterName;
         }
 
         public SqlCommand ToCommand()
