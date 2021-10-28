@@ -22,7 +22,7 @@ Install-Package GraphQL.SQL.Builder
    ```csharp
     public DataTable GetUser(int userId)
     {
-        var query = new SelectQueryCommand("Users", "U");
+        var query = new SelectQueryBuilder("Users", "U");
         query.Field("UserId", "Id").
               Field("UserName").
               Field("Password").
@@ -58,7 +58,7 @@ Install-Package GraphQL.SQL.Builder
 ```
 ## Paging
 ```csharp
-    SelectQueryCommand query = new SelectQueryCommand("Users");
+    var query = new SelectQueryBuilder("Users");
     query.Field("UserId").
           Field("UserName").
           Condition("UserId", ColumnOperator.Equals, query.AddParam(1,"UserId")).
@@ -81,7 +81,7 @@ Install-Package GraphQL.SQL.Builder
 ## Condition Sets Usage
 ```csharp
     //Find users who are admins and username is either tim or connor
-      SelectQueryCommand query = new SelectQueryCommand("Users");
+      var query = new SelectQueryBuilder("Users");
       query.Field("UserId").
             Field("UserName").
             Field("IsAdmin").
@@ -108,7 +108,7 @@ Install-Package GraphQL.SQL.Builder
 
 ```csharp  
     //(Find users who are admins and username is either tim or connor) and password='password'
-    SelectQueryCommand query = new SelectQueryCommand("Users");
+    var query = new SelectQueryBuilder("Users");
     query.Field("UserId").
             Field("UserName").
             Field("IsAdmin").
@@ -228,6 +228,30 @@ Install-Package GraphQL.SQL.Builder
     UPDATE U
         SET Password=UB.Password
     FROM Users U
+    INNER JOIN User_Backup UB ON UB.UserId=U.UserId
+    WHERE U.UserId = @UserId
+```
+
+## Delete
+```csharp
+    var delete = new DeleteQueryBuilder("Users");
+        delete.Condition("UserId", ColumnOperator.Equals, delete.AddParam("1", "UserId"));
+```
+##### Output
+```sql
+    DELETE FROM Users
+    WHERE UserId = @UserId
+```
+
+## Delete With Join
+```csharp
+    var delete = new DeleteQueryBuilder("Users","U");
+        delete.Join("User_Backup UB", JoinType.Inner, "UB.UserId=U.UserId").
+               Condition("U.UserId", ColumnOperator.Equals, delete.AddParam("1", "UserId"));
+```
+##### Output
+```sql
+    DELETE U FROM Users U
     INNER JOIN User_Backup UB ON UB.UserId=U.UserId
     WHERE U.UserId = @UserId
 ```
