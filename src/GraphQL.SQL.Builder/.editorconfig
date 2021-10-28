@@ -1,0 +1,16 @@
+﻿[*.cs]
+
+# SA1101: Prefix local calls with this
+dotnet_diagnostic.SA1101.severity = none
+dotnet_diagnostic.SA1309.severity=silent
+dotnet_diagnostic.SA1310.severity=silent
+dotnet_diagnostic.SA1201.severity=silent
+dotnet_diagnostic.SA1200.severity=silent
+dotnet_diagnostic.SA1208.severity=silent
+dotnet_diagnostic.SA1600.severity=silent
+dotnet_diagnostic.SA1633.severity=silent
+dotnet_diagnostic.SA1413.severity=silent
+dotnet_diagnostic.SA1202.severity=silent
+dotnet_diagnostic.SA1204.severity=silent
+dotnet_diagnostic.SA1214.severity=silent
+dotnet_diagnostic.SA0001.severity=silent

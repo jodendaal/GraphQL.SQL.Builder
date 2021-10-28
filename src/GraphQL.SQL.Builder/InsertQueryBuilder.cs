@@ -8,16 +8,17 @@ namespace GraphQL.SQL.Builder
     public class InsertQueryBuilder : BaseBuilder<InsertQueryBuilder>
     {
         private readonly string _tableName;
-        List<InsertField> _fields = new List<InsertField>();
-        SelectQueryBuilder _from;
+        private readonly List<InsertField> _fields = new List<InsertField>();
+        private SelectQueryBuilder _from;
+
         public InsertQueryBuilder(string tableName)
         {
             _tableName = tableName;
         }
 
-        public InsertQueryBuilder From(string tableName,string tableAlias,Action<SelectQueryBuilder> func)
+        public InsertQueryBuilder From(string tableName, string tableAlias, Action<SelectQueryBuilder> func)
         {
-            _from = new SelectQueryBuilder(tableName, tableAlias,"s");
+            _from = new SelectQueryBuilder(tableName, tableAlias);
             func(_from);
             return this;
         }
@@ -43,7 +44,7 @@ namespace GraphQL.SQL.Builder
             var sql = new StringBuilder();
             sql.AppendLine($"INSERT INTO {_tableName}");
 
-            //Fields
+            // Fields
             if (_fields.Count > 0)
             {
                 sql.AppendLine("(");
@@ -59,15 +60,13 @@ namespace GraphQL.SQL.Builder
                 }
             }
 
-            //From
-            if(_from != null)
+            // From
+            if (_from != null)
             {
                 sql.AppendLine(_from.ToString());
             }
-          
 
             return sql.ToString();
         }
-
     }
 }

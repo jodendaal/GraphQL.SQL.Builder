@@ -12,7 +12,7 @@ namespace GraphQL.SQL.Tests
         [TestMethod]
         public void Insert()
         {
-            InsertQueryBuilder insert = new InsertQueryBuilder("Users");
+            var insert = new InsertQueryBuilder("Users");
             insert.Field("UserId", "'1'").
                    Field("Password", "'test123'");
 

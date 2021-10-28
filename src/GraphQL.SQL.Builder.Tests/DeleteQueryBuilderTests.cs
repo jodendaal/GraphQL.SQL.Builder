@@ -28,7 +28,7 @@ WHERE UserId = @UserId";
         [TestMethod]
         public void Delete_Join_Condition()
         {
-            var delete = new DeleteQueryBuilder("Users","U");
+            var delete = new DeleteQueryBuilder("Users", "U");
             delete.Join("User_Backup UB", JoinType.Inner, "UB.UserId=U.UserId").
                    Condition("U.UserId", ColumnOperator.Equals, delete.AddParam("1", "UserId"));
 

@@ -13,15 +13,18 @@ namespace GraphQL.SQL
         }
 
         public List<SelectCondition> And { get; set; } = new List<SelectCondition>();
+
         public List<SelectCondition> Or { get; set; } = new List<SelectCondition>();
+
         public SetOperator SetOperator { get; set; } = SetOperator.Or;
 
         public SelectConditionSet AndSet { get; set; }
+
         public SelectConditionSet OrSet { get; set; }
 
         public SelectConditionSet AndCondition(string fieldName, ColumnOperator @operator, string value)
         {
-            And.Add(new SelectCondition(fieldName,@operator,value));
+            And.Add(new SelectCondition(fieldName, @operator, value));
             return this;
         }
 
@@ -55,7 +58,7 @@ namespace GraphQL.SQL
 
         public SelectConditionSet AndSetAndCondition(string fieldName, ColumnOperator @operator, string value)
         {
-            if(AndSet == null)
+            if (AndSet == null)
             {
                 AndSet = new SelectConditionSet(SetOperator.And);
             }
@@ -70,7 +73,7 @@ namespace GraphQL.SQL
             {
                 AndSet = new SelectConditionSet(SetOperator.Or);
             }
-           
+
             return AndSet;
         }
 
@@ -86,22 +89,23 @@ namespace GraphQL.SQL
 
         public virtual string GetSetSql(SelectConditionSet set, int level)
         {
-            var andFilter = "";
-            for (int i = 0; i < set.And.Count(); i++)
+            var andFilter = string.Empty;
+            for (int i = 0; i < set.And.Count; i++)
             {
                 var item = set.And[i];
                 andFilter += i == 0 ? $"{item}" : $" AND {item}";
-
             }
+
             var filterResult = andFilter;
 
             level++;
-            var orFilter = "";
-            for (int i = 0; i < set.Or.Count(); i++)
+            var orFilter = string.Empty;
+            for (int i = 0; i < set.Or.Count; i++)
             {
                 var item = set.Or[i];
                 orFilter += i == 0 ? $"{item}" : $" OR {item}";
             }
+
             if (!string.IsNullOrWhiteSpace(orFilter))
             {
                 filterResult = string.IsNullOrWhiteSpace(filterResult) ? orFilter : $"(({andFilter}) {set.SetOperator} ({orFilter}))";
@@ -119,9 +123,7 @@ namespace GraphQL.SQL
                 filterResult = $"({filterResult}) OR{Environment.NewLine}({orSetString})";
             }
 
-
             return $"{filterResult}";
         }
     }
 }
-

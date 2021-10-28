@@ -1,35 +1,26 @@
-﻿using GraphQL.SQL.Builder;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace GraphQL.SQL.Builder
 {
-
     public class SelectQueryBuilder : BaseConditionBuilder<SelectQueryBuilder>
     {
         private readonly string _tableName;
         private readonly string _tableAlias;
-        List<SelectField> _fields = new List<SelectField>();
-       
-       
+        private readonly List<SelectField> _fields = new List<SelectField>();
+
         private string _pageNumber;
         private string _pageSize;
         private bool _pagingEnabled = false;
-        private string _pagingOrderBy = "";
+        private string _pagingOrderBy = string.Empty;
         private string _orderBy;
         private string _groupBy;
 
         public string TableAlias => _tableAlias;
 
-        public SelectQueryBuilder(string tableName, string tableAlias,string parameterPrefix = ""):base(parameterPrefix)
-        {
-            this._tableName = tableName;
-            this._tableAlias = tableAlias;
-        }
-
-        public SelectQueryBuilder(string tableName,string tableAlias = "")
+        public SelectQueryBuilder(string tableName, string tableAlias = "")
         {
             this._tableName = tableName;
             this._tableAlias = tableAlias;
@@ -77,13 +68,13 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
-        public SelectQueryBuilder OrderBy(string fields,string direction = "ASC")
+        public SelectQueryBuilder OrderBy(string fields, string direction = "ASC")
         {
             _orderBy = $"ORDER BY {fields} {direction}";
             return this;
         }
 
-        public virtual SelectQueryBuilder Page(string pageNumber, string pageSize,string orderBy = "")
+        public virtual SelectQueryBuilder Page(string pageNumber, string pageSize, string orderBy = "")
         {
             _pagingEnabled = true;
             _pageSize = pageSize;
@@ -98,37 +89,18 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
-
-        //public SelectQueryBuilder ConditionSet(int id, SetOperator setOperator, Action<SelectConditionSet> func)
-        //{
-        //    base.AddConditionSet(id, setOperator, func);
-        //    return this;
-        //}
-
-        //public virtual SelectQueryBuilder Condition(SelectCondition field)
-        //{
-        //    base.AddCondition(field);
-        //    return this;
-        //}
-
-        //public SelectQueryBuilder Condition(string fieldName, ColumnOperator @operator, string value)
-        //{
-        //    base.AddCondition(fieldName,@operator,value);
-        //    return this;
-        //}
-
         public override string ToString()
         {
             StringBuilder result = new StringBuilder();
 
-            //Select
+            // Select
             result.Append($"SELECT{Environment.NewLine}");
 
-            //Fields
+            // Fields
             var fields = string.Join($",{Environment.NewLine}", _fields.Select(i => $"{i}"));
             result.Append($"{fields}{Environment.NewLine}");
-           
-            //From
+
+            // From
             result.Append($"FROM ");
             if (!string.IsNullOrWhiteSpace(TableAlias))
             {
@@ -139,33 +111,33 @@ namespace GraphQL.SQL.Builder
                 result.Append($"{_tableName}{Environment.NewLine}");
             }
 
-            //Joins and Where
+            // Joins and Where
             var where = base.ToString();
             result.Append(where);
 
-            //Group By
+            // Group By
             if (!string.IsNullOrWhiteSpace(_groupBy))
             {
                 result.AppendLine($@"{_groupBy}");
             }
 
-            //Order By
+            // Order By
             if (!string.IsNullOrWhiteSpace(_orderBy))
             {
                 result.AppendLine($@"{_orderBy}");
             }
 
-            //Paging
+            // Paging
             if (_pagingEnabled)
             {
                 if (string.IsNullOrWhiteSpace(_orderBy))
                 {
                     result.AppendLine($@"{Environment.NewLine}ORDER BY {_pagingOrderBy}");
                 }
+
                 result.AppendLine($@"OFFSET {_pageSize} * ({_pageNumber} - 1)");
                 result.Append($@"ROWS FETCH NEXT {_pageSize} ROWS ONLY");
             }
-          
 
             return result.ToString();
         }

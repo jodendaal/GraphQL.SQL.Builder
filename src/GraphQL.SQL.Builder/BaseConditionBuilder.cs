@@ -5,21 +5,20 @@ using System.Text;
 
 namespace GraphQL.SQL.Builder
 {
-    public class BaseConditionBuilder<T> : BaseBuilder<T> where T : BaseBuilder<T>
+    public class BaseConditionBuilder<T> : BaseBuilder<T>
+        where T : BaseBuilder<T>
     {
-        private List<SelectCondition> _conditions = new List<SelectCondition>();
-        Dictionary<int, SelectConditionSet> _conditionSets = new Dictionary<int, SelectConditionSet>();
-        List<SelectJoin> _joins = new List<SelectJoin>();
+        private readonly List<SelectCondition> _conditions = new List<SelectCondition>();
+        private readonly Dictionary<int, SelectConditionSet> _conditionSets = new Dictionary<int, SelectConditionSet>();
+        private readonly List<SelectJoin> _joins = new List<SelectJoin>();
 
-        internal List<SelectCondition> Conditions { get => _conditions;  }
-        internal Dictionary<int, SelectConditionSet> ConditionSets { get => _conditionSets;  }
+        internal List<SelectCondition> Conditions { get => _conditions; }
+
+        internal Dictionary<int, SelectConditionSet> ConditionSets { get => _conditionSets; }
+
         internal List<SelectJoin> Joins { get => _joins; }
 
         public BaseConditionBuilder()
-        {
-
-        }
-        public BaseConditionBuilder(string parameterSuffix):base(parameterSuffix)
         {
         }
 
@@ -28,8 +27,8 @@ namespace GraphQL.SQL.Builder
             if (!_conditionSets.ContainsKey(id))
             {
                 _conditionSets.Add(id, new SelectConditionSet(setOperator));
-
             }
+
             func(_conditionSets[id]);
 
             return this as T;
@@ -58,25 +57,24 @@ namespace GraphQL.SQL.Builder
             return this as T;
         }
 
-        internal string GetSetsSql(Dictionary<int,SelectConditionSet> filterSets)
+        internal string GetSetsSql(Dictionary<int, SelectConditionSet> filterSets)
         {
-
             var setClauses = new List<KeyValuePair<SetOperator, string>>();
             foreach (var set in filterSets)
             {
                 setClauses.Add(new KeyValuePair<SetOperator, string>(set.Value.SetOperator, set.Value.GetSetSql(set.Value, set.Key)));
             }
 
-            var result = "";
-            if (setClauses.Count() > 1)
+            var result = string.Empty;
+            if (setClauses.Count > 1)
             {
-                //Group By SetOperator
-                //Ands First then ORS
+                // Group By SetOperator
+                // Ands First then ORS
                 var results = from p in setClauses
                               group p by p.Key into g
                               select new
                               {
-                                  Key = g.Key,
+                                  g.Key,
                                   Items = g.ToList()
                               };
 
@@ -87,7 +85,6 @@ namespace GraphQL.SQL.Builder
                     result = string.Join($" {SetOperator.And}{Environment.NewLine}", andSql);
                 }
 
-
                 var ors = results.Where(i => i.Key == SetOperator.Or).Select(i => i.Items).FirstOrDefault();
                 if (ors != null)
                 {
@@ -97,7 +94,6 @@ namespace GraphQL.SQL.Builder
                         if (string.IsNullOrWhiteSpace(result))
                         {
                             result = $"{string.Join($" {SetOperator.Or}{Environment.NewLine}", orSql)}";
-
                         }
                         else
                         {
@@ -118,7 +114,7 @@ namespace GraphQL.SQL.Builder
         {
             var result = new StringBuilder();
 
-            //Joins
+            // Joins
             if (Joins.Count > 0)
             {
                 var joins = Joins.Select(i => $"{i}");
@@ -126,7 +122,7 @@ namespace GraphQL.SQL.Builder
                 result.AppendLine();
             }
 
-            //Conditions
+            // Conditions
             if (Conditions.Count > 0 || ConditionSets.Count > 0)
             {
                 result.Append($"WHERE ");
@@ -150,7 +146,6 @@ namespace GraphQL.SQL.Builder
                     var conditionSetSql = GetSetsSql(ConditionSets);
                     if (Conditions.Count > 0)
                     {
-
                         result.Append($" AND{Environment.NewLine}({conditionSetSql})");
                     }
                     else

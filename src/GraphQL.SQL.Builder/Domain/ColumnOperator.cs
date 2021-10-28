@@ -4,8 +4,7 @@ namespace GraphQL.SQL.Builder
 {
     public sealed class ColumnOperator
     {
-
-        private readonly String name;
+        private readonly string name;
         private readonly int value;
 
         public static readonly new ColumnOperator Equals = new ColumnOperator(1, "=");
@@ -15,13 +14,13 @@ namespace GraphQL.SQL.Builder
         public static readonly ColumnOperator LessThan = new ColumnOperator(5, "<");
         public static readonly ColumnOperator LessThanOrEqualTo = new ColumnOperator(6, "<=");
 
-        private ColumnOperator(int value, String name)
+        private ColumnOperator(int value, string name)
         {
             this.name = name;
             this.value = value;
         }
 
-        public override String ToString()
+        public override string ToString()
         {
             return name;
         }
@@ -44,6 +43,5 @@ namespace GraphQL.SQL.Builder
 
             return ColumnOperator.Equals;
         }
-
     }
 }

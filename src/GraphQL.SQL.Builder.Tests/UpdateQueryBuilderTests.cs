@@ -33,7 +33,7 @@ WHERE UserId = @UserId";
         [TestMethod]
         public void Update_From_Select()
         {
-            var update = new UpdateQueryBuilder("Users","U");
+            var update = new UpdateQueryBuilder("Users", "U");
             update.Join("User_Backup UB", JoinType.Inner, "UB.UserId=U.UserId").
                    Field("Password", "UB.Password").
                    Condition("U.UserId", ColumnOperator.Equals, update.AddParam("1", "UserId"));

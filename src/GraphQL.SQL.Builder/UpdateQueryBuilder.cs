@@ -7,11 +7,11 @@ namespace GraphQL.SQL.Builder
 {
     public class UpdateQueryBuilder : BaseConditionBuilder<UpdateQueryBuilder>
     {
-        private string _tableAlias;
+        private readonly string _tableAlias;
         private readonly string _tableName;
-        List<UpdateField> _fields = new List<UpdateField>();
-       
-        public UpdateQueryBuilder(string tableName,string tableAlias = "")
+        private readonly List<UpdateField> _fields = new List<UpdateField>();
+
+        public UpdateQueryBuilder(string tableName, string tableAlias = "")
         {
             _tableName = tableName;
             _tableAlias = tableAlias;
@@ -28,13 +28,12 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
-
         public override string ToString()
         {
             var sql = new StringBuilder();
             var isSelect = this.Joins.Count > 0;
 
-            if(!isSelect)
+            if (!isSelect)
             {
                 sql.AppendLine($"UPDATE {_tableName}");
             }
@@ -43,7 +42,7 @@ namespace GraphQL.SQL.Builder
                 sql.AppendLine($"UPDATE {_tableAlias}");
             }
 
-            //Fields
+            // Fields
             if (_fields.Count > 0)
             {
                 sql.AppendLine("SET");
@@ -55,12 +54,11 @@ namespace GraphQL.SQL.Builder
                 sql.AppendLine($"FROM {_tableName} {_tableAlias}");
             }
 
-            //Joins and Where
+            // Joins and Where
             var where = base.ToString();
             sql.Append(where);
 
             return sql.ToString();
         }
-
     }
 }

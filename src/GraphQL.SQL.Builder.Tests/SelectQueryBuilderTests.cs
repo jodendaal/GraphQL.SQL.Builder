@@ -16,7 +16,7 @@ namespace GraphQL.SQL.Tests
             query.Field("UserId", "Id").
                Field("UserName").
                Field("Password").
-               Condition("U.UserId", ColumnOperator.Equals, query.AddParam(userId,"UserId"));
+               Condition("U.UserId", ColumnOperator.Equals, query.AddParam(userId, "UserId"));
 
             var table = new DataTable();
             var sqlCommand = query.ToCommand();
@@ -38,7 +38,7 @@ namespace GraphQL.SQL.Tests
         [TestMethod]
         public void Select_Simple_Paging()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("Users");
+            var query = new SelectQueryBuilder("Users");
             query.Field("UserId").
                   Field("UserName").
                   Condition("UserId", ColumnOperator.Equals, query.AddParam(1, "UserId")).
@@ -63,7 +63,7 @@ rows fetch next @_pagesize rows only";
         public void Select_Simple_Two_Sets()
         {
             //(Find users who are admins and username is either tim or connor and password='password'
-            SelectQueryBuilder query = new SelectQueryBuilder("Users");
+            var query = new SelectQueryBuilder("Users");
             query.Field("UserId").
                   Field("UserName").
                   Field("IsAdmin").
@@ -98,11 +98,11 @@ WHERE (((IsAdmin = @IsAdmin) AND (UserName = @p_1 OR UserName = @p_2))) AND
         public void Select_Simple_One_Set()
         {
             //Find users who are admins and username is either tim or connor
-            SelectQueryBuilder query = new SelectQueryBuilder("Users");
+            var query = new SelectQueryBuilder("Users");
             query.Field("UserId").
                   Field("UserName").
                   Field("IsAdmin").
-                  Condition("IsAdmin", ColumnOperator.Equals, query.AddParam(true,"IsAdmin")).
+                  Condition("IsAdmin", ColumnOperator.Equals, query.AddParam(true, "IsAdmin")).
                   ConditionSet(1, SetOperator.And, (set) =>
                   {
                       set.OrCondition("UserName", ColumnOperator.Equals, query.AddParam("tim")).
@@ -167,7 +167,7 @@ WHERE U.UserId = 1";
             query.Field("U.UserId", "Id").
                   Field("U.UserName").
                   Field("U.Password").
-                  Join("Preferences P",JoinType.Inner,"P.UserId = U.UserId").
+                  Join("Preferences P", JoinType.Inner, "P.UserId = U.UserId").
                   Field("P.Theme").
                   Condition("U.UserId", ColumnOperator.Equals, "1");
 
@@ -188,7 +188,7 @@ WHERE U.UserId = 1";
         [TestMethod]
         public void Select_Join_With_Condition()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]", "[UP]");
+            var query = new SelectQueryBuilder("[dbo].[users]", "[UP]");
             query.Field("[UP].[UserId]", "[Id]").
                   Field("[UP].[username]", "[UN]").
                   Field("[UP].[password]", "[PWD]").
@@ -213,7 +213,7 @@ WHERE [O].[OrderId] = @OrderId";
         [TestMethod]
         public void Select_ConditionSets()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]", "[UP]");
+            var query = new SelectQueryBuilder("[dbo].[users]", "[UP]");
             query.Field("[UP].[UserId]", "[Id]").
                   Field("[UP].[username]", "[UN]").
                   Field("[UP].[password]", "[PWD]").
@@ -252,7 +252,7 @@ WHERE ([O].[OrderId] = @OrderId AND [UP].[password] = @Password) AND
         [TestMethod]
         public void Select_ConditionSets_Multiple()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
                   Field("[dbo].[users].[username]").
                   Field("[dbo].[users].[password]").
@@ -293,7 +293,7 @@ WHERE (([dbo].[users].[userId] = @userId OR [dbo].[users].[username] = @username
 
         public void Select_Paging_Paramters()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]", "");
+            var query = new SelectQueryBuilder("[dbo].[users]", "");
             query.Field("[dbo].[users].[userId]").
                   Field("[dbo].[users].[username]").
                   Field("[dbo].[users].[password]").
@@ -332,7 +332,7 @@ ROWS FETCH NEXT @_PageSize ROWS ONLY";
         [TestMethod]
         public void Select_ConditionSet_Parameters()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
                   Field("[dbo].[users].[username]").
                   Field("[dbo].[users].[password]").
@@ -388,7 +388,7 @@ WHERE (([dbo].[users].[userId] = @userId AND [dbo].[users].[username] = @usernam
         [TestMethod]
         public void Select_Parameter_Names_AutoGenerate()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
                   Field("[dbo].[users].[username]").
                   Field("[dbo].[users].[password]").
@@ -435,7 +435,7 @@ WHERE [dbo].[users].[userId] = @userId AND [dbo].[users].[username] = @userId_1 
         [TestMethod]
         public void Select_OrderBy()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
                   OrderBy("[dbo].[users].[userId]", "ASC");
             var sql = query.ToString();
@@ -451,7 +451,7 @@ ORDER BY [dbo].[users].[userId] ASC
         [TestMethod]
         public void Select_OrderBy_With_Paging()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
                   OrderBy("[dbo].[users].[userId]", "ASC").
                   Page(query.AddParam(1, "_page"), query.AddParam(10, "_pageSize"));
@@ -475,7 +475,7 @@ ROWS FETCH NEXT @_pageSize ROWS ONLY";
         [TestMethod]
         public void Select_Count()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]");
+            var query = new SelectQueryBuilder("[dbo].[users]");
             query.Count("*").
                   OrderBy("[dbo].[users].[userId]", "ASC").
                   Page(query.AddParam(1, "_page"), query.AddParam(10, "_pageSize"));
@@ -527,7 +527,7 @@ ROWS FETCH NEXT @_pageSize ROWS ONLY";
         [TestMethod]
         public void Select_Min()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("Orders");
+            var query = new SelectQueryBuilder("Orders");
             query.Min("OrderId", "MinOrderId").
                   Field("customerId").
                   OrderBy("CustomerId", "ASC").
@@ -555,7 +555,7 @@ ROWS FETCH NEXT @_pageSize ROWS ONLY";
         [TestMethod]
         public void Select_Max()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("Orders");
+            var query = new SelectQueryBuilder("Orders");
             query.Max("OrderId", "MaxOrderId").
                   Field("customerId").
                   OrderBy("CustomerId", "ASC").
@@ -583,7 +583,7 @@ ROWS FETCH NEXT @_pageSize ROWS ONLY";
         [TestMethod]
         public void Select_Sum()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("Orders");
+            var query = new SelectQueryBuilder("Orders");
             query.Sum("OrderId", "SumOrderId").
                   Field("customerId").
                   OrderBy("CustomerId", "ASC").
@@ -611,7 +611,7 @@ ROWS FETCH NEXT @_pageSize ROWS ONLY";
         [TestMethod]
         public void Select_Paging()
         {
-            SelectQueryBuilder query = new SelectQueryBuilder("[dbo].[users]", "");
+            var query = new SelectQueryBuilder("[dbo].[users]", "");
             query.Field("[dbo].[users].[userId]").
                   Field("[dbo].[users].[username]").
                   Field("[dbo].[users].[password]").

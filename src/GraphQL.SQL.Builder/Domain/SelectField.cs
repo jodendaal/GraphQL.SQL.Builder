@@ -2,7 +2,8 @@
 {
     public class SelectField : Field
     {
-        public SelectField(string name, string @as):base(name)
+        public SelectField(string name, string @as)
+            : base(name)
         {
             As = @as;
         }
@@ -20,4 +21,3 @@
         }
     }
 }
-

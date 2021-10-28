@@ -8,6 +8,7 @@ namespace GraphQL.SQL.Builder.Domain
     public static class SqlDbTypeExtensions
     {
         private static Dictionary<string, SqlDbType> _typeMappings;
+
         public static SqlDbType ToSqlDbType(this string sqlTypeString)
         {
             if (_typeMappings == null)
