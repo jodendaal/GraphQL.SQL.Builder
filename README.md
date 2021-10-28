@@ -17,7 +17,7 @@ Currently used in  [GraphQL.SQL](https://github.com/jodendaal/GraphQL.SQL) for d
 ```
 Install-Package GraphQL.SQL.Builder
 ```
-
+https://www.nuget.org/packages/GraphQL.SQL.Builder/
 ## Simple Usage
    ```csharp
     public DataTable GetUser(int userId)
