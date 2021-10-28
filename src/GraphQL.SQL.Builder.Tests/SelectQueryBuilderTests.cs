@@ -899,5 +899,64 @@ WHERE OB.CustomerId = O.CustomerId)";
             Assert.AreEqual(expected.ToLower(), sql.ToLower());
 
         }
+
+
+
+        [TestMethod]
+        public void Select_Field_RawSql()
+        {
+            var query = new SelectQueryBuilder("Orders");
+            query.Field("(SELCT top 1 Description from SomeTable where ID = OrderId)", "Description").
+                  Field("customerId").
+                  OrderBy("CustomerId", "ASC").
+                  GroupBy("CustomerId").
+                  Page(query.AddParam(1, "_page"), query.AddParam(10, "_pageSize"));
+
+
+            var sql = query.ToString();
+
+
+            var expected =
+@"SELECT
+(SELCT top 1 Description from SomeTable where ID = OrderId) AS Description,
+customerId
+FROM Orders
+GROUP BY CustomerId
+ORDER BY CustomerId ASC
+OFFSET @_pageSize * (@_page - 1)
+ROWS FETCH NEXT @_pageSize ROWS ONLY";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+
+        }
+
+        [TestMethod]
+        public void Select_Condition_RawSql()
+        {
+            var query = new SelectQueryBuilder("Orders","O");
+            query.Field("O.CustomerId").
+                  Exists((subquery) =>
+                  {
+                      subquery.Table("SomeTable", "ST").
+                      Field("*").
+                      Condition("ST.ID", ColumnOperator.Equals, "O.OrderId");
+                  }).Condition("SELCT top 1 Description from SomeTable where ID = OrderId");
+
+
+            var sql = query.ToString();
+
+
+            var expected =
+@"SELECT
+O.CustomerId
+FROM Orders O
+WHERE EXISTS (SELECT
+*
+FROM SomeTable ST
+WHERE ST.ID = O.OrderId) AND (SELCT top 1 Description from SomeTable where ID = OrderId)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+
+        }
     }
 }

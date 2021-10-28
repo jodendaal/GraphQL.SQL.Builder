@@ -90,6 +90,12 @@ namespace GraphQL.SQL.Builder
             return this as T;
         }
 
+        public T Condition(string rawSql)
+        {
+            Condition(new SelectCondition($"({rawSql})", string.Empty, string.Empty));
+            return this as T;
+        }
+
         public T Condition(string fieldName, string @operator, string value)
         {
             Condition(new SelectCondition(fieldName, @operator, value));

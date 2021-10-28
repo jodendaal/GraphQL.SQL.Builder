@@ -24,6 +24,8 @@ namespace GraphQL.SQL.Builder
                 case ColumnOperator.NOT_EXISTS:
                 case ColumnOperator.EXISTS:
                     return $"{Operator} {Value}";
+                case "":
+                    return $"{FieldName}";
                 default:
                     return $"{FieldName} {Operator} {Value}";
             }
