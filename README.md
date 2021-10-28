@@ -1,5 +1,5 @@
 # GraphQL.SQL.Builder for .NET
-[![.NET](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml)
+[![.NET](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml) [![NuGet Badge](https://buildstats.info/nuget/GraphQL.SQL.Builder)](https://www.nuget.org/packages/GraphQL.SQL.Builder)
 
 SQL Query Builder Utility 
 
