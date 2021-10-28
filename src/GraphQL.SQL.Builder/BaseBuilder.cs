@@ -4,7 +4,7 @@ using System.Data;
 using System.Data.SqlClient;
 namespace GraphQL.SQL.Builder
 {
-    public class BaseBuilder 
+    public class BaseBuilder<T> 
     {
         Dictionary<string, System.Data.SqlClient.SqlParameter> _parameters = new Dictionary<string, System.Data.SqlClient.SqlParameter>();
         public Dictionary<string, System.Data.SqlClient.SqlParameter> Parameters { get { return _parameters; } }
@@ -18,11 +18,6 @@ namespace GraphQL.SQL.Builder
         {
             this.parameterSuffix = parameterSuffix;
         }
-
-        public bool AddParams { get; private set; }
-
-       
-
 
         /// <summary>
         /// Adds a command parameters and returns the new paramter name

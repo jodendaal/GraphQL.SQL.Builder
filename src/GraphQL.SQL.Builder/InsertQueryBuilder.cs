@@ -5,7 +5,7 @@ using System.Text;
 
 namespace GraphQL.SQL.Builder
 {
-    public class InsertQueryBuilder : BaseBuilder
+    public class InsertQueryBuilder : BaseBuilder<InsertQueryBuilder>
     {
         private readonly string _tableName;
         List<InsertField> _fields = new List<InsertField>();

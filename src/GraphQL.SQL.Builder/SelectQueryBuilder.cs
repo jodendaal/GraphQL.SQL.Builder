@@ -7,14 +7,13 @@ using System.Text;
 namespace GraphQL.SQL.Builder
 {
 
-    public class SelectQueryBuilder : BaseBuilder
+    public class SelectQueryBuilder : BaseConditionBuilder<SelectQueryBuilder>
     {
         private readonly string _tableName;
         private readonly string _tableAlias;
         List<SelectField> _fields = new List<SelectField>();
-        List<SelectJoin> _joins = new List<SelectJoin>();
-        List<SelectCondition> _conditions = new List<SelectCondition>();
-        Dictionary<int,SelectConditionSet> _conditionSets = new Dictionary<int, SelectConditionSet>();
+       
+       
         private string _pageNumber;
         private string _pageSize;
         private bool _pagingEnabled = false;
@@ -84,28 +83,6 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
-        public SelectQueryBuilder Join(string tableName, JoinType joinType, string joinFields)
-        {
-            return Join(new SelectJoin(tableName, joinType, joinFields));
-        }
-
-        public SelectQueryBuilder Join(SelectJoin field)
-        {
-            _joins.Add(field);
-            return this;
-        }
-
-        public SelectQueryBuilder ConditionSet(int id,SetOperator setOperator,Action<SelectConditionSet> func)
-        {
-            if (!_conditionSets.ContainsKey(id))
-            {
-                _conditionSets.Add(id, new SelectConditionSet(setOperator));
-                
-            }
-            func(_conditionSets[id]);
-            return this;
-        }
-
         public virtual SelectQueryBuilder Page(string pageNumber, string pageSize,string orderBy = "")
         {
             _pagingEnabled = true;
@@ -115,80 +92,30 @@ namespace GraphQL.SQL.Builder
             return this;
         }
 
-        public SelectQueryBuilder Condition(string fieldName, ColumnOperator @operator, string value)
-        {
-            return Condition(new SelectCondition(fieldName, @operator, value));
-        }
-
-        public virtual SelectQueryBuilder Condition(SelectCondition field)
-        {
-            _conditions.Add(field);
-            return this;
-        }
-
         public SelectQueryBuilder AddField(SelectField field)
         {
             _fields.Add(field);
             return this;
         }
-        
-
-        public string GetSetsSql(Dictionary<int,SelectConditionSet> filterSets)
-        {
-
-            var setClauses = new List<KeyValuePair<SetOperator, string>>();
-            foreach (var set in filterSets)
-            {
-                setClauses.Add(new KeyValuePair<SetOperator, string>(set.Value.SetOperator, set.Value.GetSetSql(set.Value, set.Key)));
-            }
-
-            var result = "";
-            if (setClauses.Count() > 1)
-            {
-                //Group By SetOperator
-                //Ands First then ORS
-                var results = from p in setClauses
-                              group p by p.Key into g
-                              select new
-                              {
-                                  Key = g.Key,
-                                  Items = g.ToList()
-                              };
-
-                var ands = results.Where(i => i.Key == SetOperator.And).Select(i => i.Items).FirstOrDefault();
-                if (ands != null)
-                {
-                    var andSql = ands.Select(i => $"({i.Value})");
-                    result = string.Join($" {SetOperator.And}{Environment.NewLine}", andSql);
-                }
 
 
-                var ors = results.Where(i => i.Key == SetOperator.Or).Select(i => i.Items).FirstOrDefault();
-                if (ors != null)
-                {
-                    var orSql = ors.Select(i => $"({i.Value})");
-                    if (ors.Count > 0)
-                    {
-                        if (string.IsNullOrWhiteSpace(result))
-                        {
-                            result = $"{string.Join($" {SetOperator.Or}{Environment.NewLine}", orSql)}";
+        //public SelectQueryBuilder ConditionSet(int id, SetOperator setOperator, Action<SelectConditionSet> func)
+        //{
+        //    base.AddConditionSet(id, setOperator, func);
+        //    return this;
+        //}
 
-                        }
-                        else
-                        {
-                            result = $"({result}) OR{Environment.NewLine}{string.Join($" {SetOperator.Or}", orSql)}";
-                        }
-                    }
-                }
-            }
-            else
-            {
-                result = string.Join(" ", setClauses.Select(i => $"{i.Value}"));
-            }
+        //public virtual SelectQueryBuilder Condition(SelectCondition field)
+        //{
+        //    base.AddCondition(field);
+        //    return this;
+        //}
 
-            return result;
-        }
-
+        //public SelectQueryBuilder Condition(string fieldName, ColumnOperator @operator, string value)
+        //{
+        //    base.AddCondition(fieldName,@operator,value);
+        //    return this;
+        //}
 
         public override string ToString()
         {
@@ -212,46 +139,9 @@ namespace GraphQL.SQL.Builder
                 result.Append($"{_tableName}{Environment.NewLine}");
             }
 
-            //Joins
-            if (_joins.Count > 0)
-            {
-                var joins = _joins.Select(i => $"{i}");
-                result.Append(string.Join($"{Environment.NewLine}", joins));
-                result.AppendLine();
-            }
-
-            //Where
-            if (_conditions.Count > 0 || _conditionSets.Count > 0)
-            {
-                result.Append($"WHERE ");
-                if (_conditions.Count > 0)
-                {
-                    if (_conditionSets.Count > 0 && _conditions.Count > 0)
-                    {
-                        result.Append($"(");
-                    }
-
-                    result.Append(string.Join($" {SetOperator.And} ", _conditions.Select(i => i.ToString())));
-
-                    if (_conditionSets.Count > 0 && _conditions.Count > 0)
-                    {
-                        result.Append($")");
-                    }
-                }
-
-                if (_conditionSets.Count > 0)
-                {
-                    var conditionSetSql = GetSetsSql(_conditionSets);
-                    if (_conditions.Count > 0) {
-
-                        result.Append($" AND{Environment.NewLine}({conditionSetSql})");
-                    }
-                    else
-                    {
-                        result.Append($"{conditionSetSql}");
-                    }
-                }
-            }
+            //Joins and Where
+            var where = base.ToString();
+            result.Append(where);
 
             //Group By
             if (!string.IsNullOrWhiteSpace(_groupBy))

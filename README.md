@@ -202,6 +202,37 @@ Usefull for scenarious where dynamic SQL is required. Supports complex set logic
     WHERE UB.UserId = @UserId
 ```
 
+## Update
+```csharp
+    var update = new UpdateQueryBuilder("Users");
+        update.Field("UserId", update.AddParam(10, "NewUserId")).
+               Field("Password", update.AddParam("3423", "Password")).
+               Condition("UserId", ColumnOperator.Equals, update.AddParam("1", "UserId"));
+```
+##### Output
+```sql
+    UPDATE Users
+    SET UserId=@NewUserId,
+        Password=@Password
+    WHERE UserId = @UserId
+```
+
+## Update from Join
+```csharp
+     var update = new UpdateQueryBuilder("Users","U");
+         update.Join("User_Backup UB", JoinType.Inner, "UB.UserId=U.UserId").
+                Field("Password", "UB.Password").
+                Condition("U.UserId", ColumnOperator.Equals, update.AddParam("1", "UserId"));
+```
+##### Output
+```sql
+    UPDATE U
+        SET Password=UB.Password
+    FROM Users U
+    INNER JOIN User_Backup UB ON UB.UserId=U.UserId
+    WHERE U.UserId = @UserId
+```
+
 ## Join
 ```csharp
     var query = new SelectQueryBuilder("Users", "U");
