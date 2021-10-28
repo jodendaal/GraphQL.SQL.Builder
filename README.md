@@ -1,7 +1,7 @@
-# GraphQL.SQL.Builder
+# GraphQL.SQL.Builder for .NET
 [![.NET](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml)
 
-SQL Query Builder Utility
+SQL Query Builder Utility 
 
 Useful for scenarios where dynamic SQL is required. Supports multiple condition set logic.
 
