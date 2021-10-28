@@ -465,7 +465,7 @@ ORDER BY [dbo].[users].[userId] ASC
         }
 
         [TestMethod]
-        public void Select_OrderByMethodDessc()
+        public void Select_OrderByMethodDesc()
         {
             var query = new SelectQueryBuilder("[dbo].[users]");
             query.Field("[dbo].[users].[userId]").
@@ -475,7 +475,7 @@ ORDER BY [dbo].[users].[userId] ASC
 @"SELECT
 [dbo].[users].[userId]
 FROM [dbo].[users]
-ORDER BY [dbo].[users].[userId] ASC
+ORDER BY [dbo].[users].[userId] DESC
 ";
             Assert.AreEqual(expected.ToLower(), sql.ToLower());
         }
