@@ -4,10 +4,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageProjectUrl>https://github.com/jodendaal/GraphQL.SQL.Builder</PackageProjectUrl>
     <RepositoryUrl>https://github.com/jodendaal/GraphQL.SQL.Builder</RepositoryUrl>
-    <Description># GraphQL.SQL.Builder for .NET
-[![.NET](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml/badge.svg?branch=main)](https://github.com/jodendaal/GraphQL.SQL.Builder/actions/workflows/dotnet.yml)
-
-SQL Query Builder Utility 
+    <Description>SQL Query Builder Utility
 
 Useful for scenarios where dynamic SQL is required. Supports multiple condition set logic.
 
@@ -15,121 +12,10 @@ Generate Select, Insert, Update and Delete statements with parameters.
 
 Additional features include : Paging, Advanced Condition Sets, Auto Parameter Naming
 
-Currently used in  [GraphQL.SQL](https://github.com/jodendaal/GraphQL.SQL) for dynamically generating SQL statements.
-
-## Getting Started
-
-#### Install Package
-```
-Install-Package GraphQL.SQL.Builder
-```
-
-## Simple Usage
-   ```csharp
-    public DataTable GetUser(int userId)
-    {
-        var query = new SelectQueryCommand("Users", "U");
-        query.Field("UserId", "Id").
-              Field("UserName").
-              Field("Password").
-              Condition("U.UserId", ColumnOperator.Equals, query.AddParam(userId,"UserId"));
-        var sqlCommand = query.ToCommand();
-
-        var table = new DataTable();
-        using (var connection = new SqlConnection("connection_string"))
-        {
-            connection.Open();
-            sqlCommand.Connection = connection;
-
-            using (var dataAdapter = new SqlDataAdapter(sqlCommand))
-            {
-                dataAdapter.Fill(table);
-            }
-        }
-
-        return table;
-    }
-   ```
-##### Output
-```sql
-    SELECT
-          UserId AS Id,
-          UserName,
-          Password
-    FROM Users U
-    WHERE U.UserId = @UserId
-    
-    --Parameters
-    @UserId=1
-```
-## Paging
-```csharp
-    SelectQueryCommand query = new SelectQueryCommand("Users");
-    query.Field("UserId").
-          Field("UserName").
-          Condition("UserId", ColumnOperator.Equals, query.AddParam(1,"UserId")).
-          Page(query.AddParam(1, "_PageNumber"), query.AddParam(10, "_PageSize"), "UserId");
-```    
-##### Output
-```sql
-    SELECT
-        UserId,
-        UserName
-    FROM Users
-    WHERE UserId = @UserId
-    ORDER BY UserId
-    OFFSET @_PageSize * (@_PageNumber - 1)
-    ROWS FETCH NEXT @_PageSize ROWS ONLY
-
-    --Parameters
-    @_PageNumber=1,@_PageSize=10,@UserId=1
-```
-## Condition Sets Usage
-```csharp
-    //Find users who are admins and username is either tim or connor
-      SelectQueryCommand query = new SelectQueryCommand("Users");
-      query.Field("UserId").
-            Field("UserName").
-            Field("IsAdmin").
-            Condition("IsAdmin", ColumnOperator.Equals, query.AddParam(true,"IsAdmin")).
-            ConditionSet(1, SetOperator.And, (set) =&gt;
-            {
-                set.OrCondition("UserName", ColumnOperator.Equals, query.AddParam("tim")).
-                OrCondition("UserName", ColumnOperator.Equals, query.AddParam("connor"));
-            });
-```    
-##### Output
-```sql
-    SELECT
-         UserId,
-         UserName,
-         IsAdmin
-     FROM Users
-     WHERE (IsAdmin = @IsAdmin) AND (UserName = @p_1 OR UserName = @p_2)
-
-    --Parameters
-    @IsAdmin=1,@p_1='tim',@p_2='connor'
-```
-## Select
-```csharp
-    var query = new SelectQueryBuilder("Users", "U");
-    query.Field("UserId", "Id").
-          Field("UserName").
-          Field("Password").
-          Condition("U.UserId", ColumnOperator.Equals, "1");
-```
-##### Output
-```sql
-    SELECT
-          UserId AS Id,
-          UserName,
-          Password
-    FROM Users U
-    WHERE U.UserId = 1
-```</Description>
+Currently used in GraphQL.SQL for dynamically generating SQL statements.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <Authors>justim.odendaal</Authors>
   </PropertyGroup>
 
