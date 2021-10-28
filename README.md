@@ -3,21 +3,20 @@
 
 SQL Query Builder Utility
 
-Usefull for scenarious where dynamic SQL is required. Supports complex set logic.
+Useful for scenarios where dynamic SQL is required. Supports multiple condition set logic.
 
-## Supported Queries
--   [x] Select
--   [x] Insert
--   [x] Update
--   [x] Delete
--   [x] Paging
+Generate Select, Insert, Update and Delete statements with parameters.
 
-## Aggregates
--   [x] Count 
--   [x] Min
--   [x] Max
--   [x] Sum
--   [x] Avg
+Additional features include : Paging, Advanced Condition Sets, Auto Parameter Naming
+
+Currently used in  [GraphQL.SQL](https://github.com/jodendaal/GraphQL.SQL) for dynamically generating SQL statements.
+
+## Getting Started
+
+#### Install Package
+```
+Install-Package GraphQL.SQL.Builder
+```
 
 ## Simple Usage
    ```csharp
