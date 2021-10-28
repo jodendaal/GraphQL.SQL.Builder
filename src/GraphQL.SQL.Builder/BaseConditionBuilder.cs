@@ -40,7 +40,15 @@ namespace GraphQL.SQL.Builder
             return this as T;
         }
 
-        public T Condition(string fieldName, ColumnOperator @operator, string value)
+        public T Condition(string fieldName, string @operator, Action<SelectQueryBuilder> builder)
+        {
+            var queryBuilder = new SelectQueryBuilder(string.Empty, string.Empty);
+            builder(queryBuilder);
+            Condition(new SelectCondition(fieldName, @operator, $"({queryBuilder})"));
+            return this as T;
+        }
+
+        public T Condition(string fieldName, string @operator, string value)
         {
             Condition(new SelectCondition(fieldName, @operator, value));
             return this as T;

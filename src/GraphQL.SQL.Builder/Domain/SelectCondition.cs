@@ -4,7 +4,7 @@ namespace GraphQL.SQL.Builder
 {
     public class SelectCondition
     {
-        public SelectCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectCondition(string fieldName, string @operator, string value)
         {
             FieldName = fieldName;
             Operator = @operator;
@@ -13,13 +13,19 @@ namespace GraphQL.SQL.Builder
 
         public string FieldName { get; set; }
 
-        public ColumnOperator Operator { get; set; } = ColumnOperator.Equals;
+        public string Operator { get; set; } = ColumnOperator.Equals;
 
         public string Value { get; set; }
 
         public override string ToString()
         {
-            return $"{FieldName} {Operator} {Value}";
+            switch (Operator)
+            {
+                case ColumnOperator.EXISTS:
+                    return $"{Operator} {Value}";
+                default:
+                    return $"{FieldName} {Operator} {Value}";
+            }
         }
     }
 }

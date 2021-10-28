@@ -7,7 +7,7 @@ using System.Data;
 namespace GraphQL.SQL.Tests
 {
     [TestClass]
-    public class SqlCommandBuilderTests
+    public class SelectQueryBuilderTests
     {
         //Example Usage
         public DataTable GetUser(int userId)
@@ -645,6 +645,80 @@ OFFSET @_PageSize * (@_PageNumber - 1)
 ROWS FETCH NEXT @_PageSize ROWS ONLY";
 
             Assert.AreEqual(expected.ToLower(), sql.ToLower());
+        }
+
+        [TestMethod]
+        public void Select_Condition_In_String()
+        {
+            var query = new SelectQueryBuilder("Orders");
+            query.Field("customerId").
+                  Condition("customerId", ColumnOperator.IN, "(1,2)");
+
+
+            var sql = query.ToString();
+
+
+            var expected =
+@"SELECT
+customerId
+FROM Orders
+WHERE customerId IN (1,2)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+
+        }
+
+        [TestMethod]
+        public void Select_Condition_In_Builder()
+        {
+            var query = new SelectQueryBuilder("Orders", "O");
+            query.Field("O.CustomerId").
+                  Condition("O.CustomerId", ColumnOperator.IN, (subQuery) =>
+                  {
+                      subQuery.Table("Order_Backup", "OB").
+                        Field("OB.CustomerId");
+                  });
+
+            var sql = query.ToString();
+
+            var expected =
+@"SELECT
+O.CustomerId
+FROM Orders O
+WHERE O.CustomerId IN (SELECT
+OB.CustomerId
+FROM Order_Backup OB
+)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+
+        }
+
+        [TestMethod]
+        public void Select_Condition_Exists()
+        {
+            var query = new SelectQueryBuilder("Orders", "O");
+            query.Field("O.CustomerId").
+                  Condition("O.CustomerId", ColumnOperator.EXISTS, (subQuery) =>
+                  {
+                      subQuery.Table("Order_Backup", "OB").
+                        Field("OB.CustomerId").
+                        Condition("OB.CustomerId", ColumnOperator.Equals, "O.CustomerId");
+                  });
+
+            var sql = query.ToString();
+
+            var expected =
+@"SELECT
+O.CustomerId
+FROM Orders O
+WHERE EXISTS (SELECT
+OB.CustomerId
+FROM Order_Backup OB
+WHERE OB.CustomerId = O.CustomerId)";
+
+            Assert.AreEqual(expected.ToLower(), sql.ToLower());
+
         }
     }
 }

@@ -22,19 +22,19 @@ namespace GraphQL.SQL
 
         public SelectConditionSet OrSet { get; set; }
 
-        public SelectConditionSet AndCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet AndCondition(string fieldName, string @operator, string value)
         {
             And.Add(new SelectCondition(fieldName, @operator, value));
             return this;
         }
 
-        public SelectConditionSet OrCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet OrCondition(string fieldName, string @operator, string value)
         {
             Or.Add(new SelectCondition(fieldName, @operator, value));
             return this;
         }
 
-        public SelectConditionSet OrSetOrCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet OrSetOrCondition(string fieldName, string @operator, string value)
         {
             if (OrSet == null)
             {
@@ -45,7 +45,7 @@ namespace GraphQL.SQL
             return this;
         }
 
-        public SelectConditionSet OrSetAndCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet OrSetAndCondition(string fieldName, string @operator, string value)
         {
             if (OrSet == null)
             {
@@ -56,7 +56,7 @@ namespace GraphQL.SQL
             return this;
         }
 
-        public SelectConditionSet AndSetAndCondition(string fieldName, ColumnOperator @operator, string value)
+        public SelectConditionSet AndSetAndCondition(string fieldName, string @operator, string value)
         {
             if (AndSet == null)
             {

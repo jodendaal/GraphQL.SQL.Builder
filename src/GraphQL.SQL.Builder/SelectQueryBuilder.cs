@@ -7,8 +7,8 @@ namespace GraphQL.SQL.Builder
 {
     public class SelectQueryBuilder : BaseConditionBuilder<SelectQueryBuilder>
     {
-        private readonly string _tableName;
-        private readonly string _tableAlias;
+        private string _tableName;
+        private string _tableAlias;
         private readonly List<SelectField> _fields = new List<SelectField>();
 
         private string _pageNumber;
@@ -24,6 +24,13 @@ namespace GraphQL.SQL.Builder
         {
             this._tableName = tableName;
             this._tableAlias = tableAlias;
+        }
+
+        public SelectQueryBuilder Table(string tableName, string tableAlias)
+        {
+            _tableAlias = tableAlias;
+            _tableName = tableName;
+            return this;
         }
 
         public SelectQueryBuilder Max(string name, string @as = "")
