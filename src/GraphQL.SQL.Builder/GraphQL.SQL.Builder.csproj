@@ -15,7 +15,7 @@ Additional features include : Paging, Advanced Condition Sets, Auto Parameter Na
 Currently used in GraphQL.SQL for dynamically generating SQL statements.</Description>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <Version>1.0.7</Version>
+    <Version>1.0.8</Version>
     <Authors>justim.odendaal</Authors>
     <EnableNETAnalyzers>false</EnableNETAnalyzers>
   </PropertyGroup>
