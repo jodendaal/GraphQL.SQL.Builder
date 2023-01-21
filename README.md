@@ -290,3 +290,5 @@ https://www.nuget.org/packages/GraphQL.SQL.Builder/
     FROM Users U
     WHERE U.UserId = 1
 ```    
+# Buy me a coffee 
+https://www.buymeacoffee.com/timdoestech?new=1
